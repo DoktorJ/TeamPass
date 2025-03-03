@@ -1,0 +1,27 @@
+name: Docker Compose Action
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      HOSTNAME: ${{ secrets.HOSTNAME }}
+      CERT_EMAIL: ${{ secrets.CERT_EMAIL }}
+      MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+      MYSQL_DB_NAME: ${{ secrets.MYSQL_DB_NAME }}
+      MYSQL_USER_NAME: ${{ secrets.MYSQL_USER_NAME }}
+      MYSQL_USER_PASSWORD: ${{ secrets.MYSQL_USER_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run docker compose
+        uses: hoverkraft-tech/compose-action@v2.2.0
+        with:
+          compose-file: "docker-compose.yml"
+
+      - name: Execute tests in the running services
+        run: |
+          docker compose build

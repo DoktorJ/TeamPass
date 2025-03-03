@@ -1,7 +1,8 @@
-version: "3"
+# updated 2025-03-03 15:13EST
 services:
   nginx:
     image: jwilder/nginx-proxy:alpine
+    container_name: nginx
     restart: unless-stopped
     networks:
       - frontend
@@ -9,14 +10,34 @@ services:
     ports:
       - "443:443"
     volumes:
-      - ./ssl:/etc/nginx/certs
+      - ssl:/etc/nginx/certs
+      - html:/usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
+    environment:
+      VIRTUAL_HOST: ${HOSTNAME}
+      LETSENCRYPT_HOST: ${HOSTNAME}
 
+  acme:
+    image: nginxproxy/acme-companion:latest
+    volumes_from:
+      - nginx:rw
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - acme:/etc/acme.sh
+    environment:
+      DEFAULT_EMAIL: ${CERT_EMAIL}
+      NGINX_PROXY_CONTAINER: nginx
+    
   teampass-web:
     image: dormancygrace/teampass:latest
     restart: unless-stopped
+    command: --hostname=${HOSTNAME}
+    ports:
+      - 829:80
+      - 429:443
     environment:
-      VIRTUAL_HOST: YOUR_HOSTNAME
+      VIRTUAL_HOST: ${HOSTNAME}
+      LETSENCRYPT_HOST: ${HOSTNAME}
       VIRTUAL_PORT: 80
       # uncomment if certificate's file name doesn't match VIRTUAL_HOST
       #CERT_NAME: YOUR_CERTIFICATE
@@ -30,14 +51,16 @@ services:
       - backend
     depends_on:
       - db
+
   db:
     restart: unless-stopped
     image: yobasystems/alpine-mariadb:latest
     environment:
-      MYSQL_ROOT_PASSWORD: YOUR_SUPERSECRET_PASSWORD
-      MYSQL_DATABASE: teampass
-      MYSQL_PASSWORD: YOUR_SECRET_PASSWORD
-      MYSQL_USER: teampass
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DB_NAME}
+      MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER_NAME}
+      GIT_BRANCH: ${GIT_BRANCH:-main}
     volumes:
       - ./teampass-db:/var/lib/mysql
     networks:
@@ -48,3 +71,8 @@ networks:
   backend:
     external: true
   teampass-internal:
+
+volumes:
+  ssl:
+  html:
+  acme:
