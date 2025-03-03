@@ -70,3 +70,8 @@ networks:
   backend:
     external: true
   teampass-internal:
+
+volumes:
+  ssl:
+  html:
+  acme:
