@@ -57,7 +57,7 @@ services:
     image: yobasystems/alpine-mariadb:latest
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_DATABASE: ${MYSQL_DB_NAME}
       MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
       MYSQL_USER: ${MYSQL_USER_NAME}
     volumes:
