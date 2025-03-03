@@ -12,7 +12,7 @@ jobs:
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@v2.2.0
         with:
-          compose-file: "/docker-compose.yml"
+          compose-file: "docker-compose.yml"
 
       - name: Execute tests in the running services
         run: |
