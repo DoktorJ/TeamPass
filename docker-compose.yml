@@ -16,7 +16,7 @@ services:
     image: dormancygrace/teampass:latest
     restart: unless-stopped
     environment:
-      VIRTUAL_HOST: YOUR_HOSTNAME
+      VIRTUAL_HOST: ${{ env.hostname }}
       VIRTUAL_PORT: 80
       # uncomment if certificate's file name doesn't match VIRTUAL_HOST
       #CERT_NAME: YOUR_CERTIFICATE
@@ -34,10 +34,10 @@ services:
     restart: unless-stopped
     image: yobasystems/alpine-mariadb:latest
     environment:
-      MYSQL_ROOT_PASSWORD: YOUR_SUPERSECRET_PASSWORD
-      MYSQL_DATABASE: teampass
-      MYSQL_PASSWORD: YOUR_SECRET_PASSWORD
-      MYSQL_USER: teampass
+      MYSQL_ROOT_PASSWORD: ${{ env.mysql_root_password }}
+      MYSQL_DATABASE: ${{ env.mysql_db_name }}
+      MYSQL_PASSWORD: ${{ env.mysql_user_password }}
+      MYSQL_USER: ${{ env.mysql_user_name }}
     volumes:
       - ./teampass-db:/var/lib/mysql
     networks:
