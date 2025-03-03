@@ -14,8 +14,8 @@ services:
       - html:/usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
     environment:
-      VIRTUAL_HOST: ${{ env.hostname }}
-      LETSENCRYPT_HOST: ${{ env.hostname }}
+      VIRTUAL_HOST: ${HOSTNAME}
+      LETSENCRYPT_HOST: ${HOSTNAME}
 
   acme:
     image: nginxproxy/acme-companion:latest
@@ -25,19 +25,19 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - acme:/etc/acme.sh
     environment:
-      DEFAULT_EMAIL: ${{ env.cert_email }}
+      DEFAULT_EMAIL: ${CERT_EMAIL}
       NGINX_PROXY_CONTAINER: nginx
     
   teampass-web:
     image: dormancygrace/teampass:latest
     restart: unless-stopped
-    command: --hostname=${{ env.hostname }}
+    command: --hostname=${HOSTNAME}
     ports:
       - 829:80
       - 429:443
     environment:
-      VIRTUAL_HOST: ${{ env.hostname }}
-      LETSENCRYPT_HOST: ${{ env.hostname }}
+      VIRTUAL_HOST: ${HOSTNAME}
+      LETSENCRYPT_HOST: ${HOSTNAME}
       VIRTUAL_PORT: 80
       # uncomment if certificate's file name doesn't match VIRTUAL_HOST
       #CERT_NAME: YOUR_CERTIFICATE
@@ -56,10 +56,10 @@ services:
     restart: unless-stopped
     image: yobasystems/alpine-mariadb:latest
     environment:
-      MYSQL_ROOT_PASSWORD: ${{ env.mysql_root_password }}
-      MYSQL_DATABASE: ${{ env.mysql_db_name }}
-      MYSQL_PASSWORD: ${{ env.mysql_user_password }}
-      MYSQL_USER: ${{ env.mysql_user_name }}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER_NAME}
     volumes:
       - ./teampass-db:/var/lib/mysql
     networks:
