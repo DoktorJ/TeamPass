@@ -65,6 +65,11 @@ services:
     networks:
       - teampass-internal
 
+volumes:
+  ssl:
+  html:
+  acme:
+
 networks:
   frontend:
   backend:
