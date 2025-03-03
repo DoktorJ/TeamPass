@@ -2,13 +2,13 @@ FROM richarvey/nginx-php-fpm:latest
 
 # The location of the web files
 ARG VOL=/var/www/html
-ENV VOL ${VOL}
+ENV VOL=${VOL}
 VOLUME ${VOL}
 
 # Configure nginx-php-fpm image to use this dir.
-ENV WEBROOT ${VOL}
+ENV WEBROOT=${VOL}
 RUN apk add --no-cache gnu-libiconv libldap gmp
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
+ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so php
 
 RUN echo && \
   # Install and configure missing PHP requirements
@@ -39,7 +39,7 @@ RUN sed -i "/^}/i \
 COPY teampass-docker-start.sh /teampass-docker-start.sh
 
 # Configure nginx-php-fpm image to pull our code.
-ENV REPO_URL https://github.com/doktorj/TeamPass.git
+ENV REPO_URL=https://github.com/doktorj/TeamPass.git
 #ENV GIT_TAG 3.0.0.14
 
 # Configure supervisord program:crond
