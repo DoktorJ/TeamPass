@@ -11,13 +11,6 @@ jobs:
 
       - name: Run docker compose
         uses: hoverkraft-tech/compose-action@v2.2.0
-        env:
-          HOSTNAME: ${{ secrets.HOSTNAME }}
-          CERT_EMAIL: ${{ secrets.CERT_EMAIL }}
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-          MYSQL_DB_NAME: ${{ secrets.MYSQL_DB_NAME }}
-          MYSQL_USER_NAME: ${{ secrets.MYSQL_USER_NAME }}
-          MYSQL_USER_PASSWORD: ${{ secrets.MYSQL_USER_PASSWORD }}
         with:
           compose-file: "docker-compose.yml"
 
