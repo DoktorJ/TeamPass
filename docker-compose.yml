@@ -2,6 +2,7 @@ version: "3"
 services:
   nginx:
     image: jwilder/nginx-proxy:alpine
+    container_name: nginx
     restart: unless-stopped
     networks:
       - frontend
@@ -9,10 +10,12 @@ services:
     ports:
       - "443:443"
     volumes:
-      - ./ssl:/etc/nginx/certs
+      - ssl:/etc/nginx/certs
+      - html:/usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
     environment:
       VIRTUAL_HOST: ${{ env.hostname }}
+      LETSENCRYPT_HOST: ${{ env.hostname }}
 
   acme:
     image: nginxproxy/acme-companion:latest
@@ -23,6 +26,7 @@ services:
       - acme:/etc/acme.sh
     environment:
       DEFAULT_EMAIL: ${{ env.cert_email }}
+      NGINX_PROXY_CONTAINER: nginx
     
   teampass-web:
     image: dormancygrace/teampass:latest
